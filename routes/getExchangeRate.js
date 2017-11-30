@@ -5,7 +5,7 @@ const url = require('url')
 
 router.get('/', (req, res, next) => {
     var params = url.parse(req.url, true).query
-    cp.exec(`python test_py.py ${params.money1} ${params.money2}`, (err, stdout, stderr) => {
+    cp.exec(`python getExchangeRate.py ${params.money1} ${params.money2}`, (err, stdout, stderr) => {
         if (err) console.log('stderr', err);
         if (stdout) {
             res.send(JSON.parse(stdout))
