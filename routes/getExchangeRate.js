@@ -8,7 +8,8 @@ router.get('/', (req, res, next) => {
     cp.exec(`python getExchangeRate.py ${params.money1} ${params.money2}`, (err, stdout, stderr) => {
         if (err) console.log('stderr', err);
         if (stdout) {
-            res.send(JSON.parse(stdout))
+            res.setHeader('Access-Control-Allow-Origin','*')
+            res.send(JSON.stringify(stdout))
         }
     });
 })

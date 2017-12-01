@@ -11,7 +11,7 @@ html = requests.get(url).content.decode('utf8').encode('utf-8') # 获取网页�
 #方式一：正则匹配
 def getMoneyInfo(money): 
     if money=='人民币':
-        return ['人民币'.decode('utf-8'),100]
+        return ['人民币',100]
     a = html.index('<td>'+money+'</td>') # 取得货币当前位置 
     s = html[a:a + 300] # 截取货币汇率那部分内容（从a到a+300位置） 
     result = re.findall('<td>(.*?)</td>', s) # 正则获取 
