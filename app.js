@@ -7,7 +7,31 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+const cp = require('child_process')
 var getExchangeRate = require('./routes/getExchangeRate');
+const mysql = require('mysql')
+const sqlConfig = require('./sqlConfig')
+const connection=mysql.createConnection(sqlConfig)
+connection.connect()
+/**
+ * @description 爬出汇率数据写入数据库以供使用
+ */
+cp.exec(`python getExchangeRate.py`, (err, stdout, stderr) => {
+  if (err) console.log('stderr', err);
+  if (stdout) {
+      var data=eval('(' + stdout + ')')
+      var sql='truncate ExchangeRate;'
+      for(var key in data){
+        sql+=`insert into ExchangeRate values('${key}',${+data[key]});`
+      }
+      connection.query(sql,(err,result)=>{
+        if(err)
+          throw err
+        else
+          console.log(...result)
+      })
+  }
+});
 
 var app = express();
 
