@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
     var params=url.parse(req.url,true).query
     var money1=params.money1
     var money2=params.money2
-    var sql=`select rate from ExchangeRate where currency in('${money1}','${money2}')`
+    var sql=`select currency,rate from ExchangeRate where currency in('${money1}','${money2}')`
     connection.query(sql,(err,result)=>{
         if(err)
             throw err
