@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
         if(err)
             throw err
         else
-            res.send([result[0].rate,result[1].rate])
+            res.send([result[0],result[1]])
     })
 })
 
