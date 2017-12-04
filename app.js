@@ -9,6 +9,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 const cp = require('child_process')
 var getExchangeRate = require('./routes/getExchangeRate');
+var getWeather = require('./routes/getWeather')
 const mysql = require('mysql')
 const sqlConfig = require('./sqlConfig')
 const connection=mysql.createConnection(sqlConfig)
@@ -50,6 +51,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/getExchangeRate',getExchangeRate);
+app.use('/getWeather',getWeather);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

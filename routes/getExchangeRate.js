@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const cp = require('child_process')
 const url = require('url')
 const mysql = require('mysql')
 const sqlConfig = require('../sqlConfig')
