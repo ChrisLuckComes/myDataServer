@@ -37,7 +37,7 @@ router.get('/', (req, res, next) => {
     ~async function() {
         let now = await getWeather('now',params)
         let daily = await getWeather('daily',params)
-        res.send([now.results[0].now,daily.results[0].daily)
+        res.send([now.results[0].now,daily.results[0].daily])
     }() 
 })
 
