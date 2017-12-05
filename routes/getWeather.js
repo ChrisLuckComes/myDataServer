@@ -3,6 +3,7 @@ const router = express.Router();
 const crypto = require('crypto')
 const queryString = require('querystring')
 const request = require('request-promise')
+const url=require('url')
 
 const URL = 'https://api.seniverse.com/v3/weather';
 
@@ -33,11 +34,19 @@ router.get('/', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     var params=getSignature()
     params.location='ip'
-    //获取即时天气
+    var reqData=url.parse(req.url,true).query
+    //获取天气数据
     ~async function() {
-        let now = await getWeather('now',params)
-        let daily = await getWeather('daily',params)
-        res.send([now.results[0].now,daily.results[0].daily])
+        let now,daily
+        if(reqData.type=='now'){//即时天气
+            now = await getWeather('now',params)
+            var nowData=now.results[0].now
+            nowData.city=now.results[0].location.name
+            res.send(nowData)
+        }else if(reqData.type=='daily'){//3日天气
+            daily = await getWeather('daily',params)
+            res.send(daily.results[0].daily)
+        }
     }() 
 })
 
