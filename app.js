@@ -10,27 +10,31 @@ var users = require('./routes/users');
 const cp = require('child_process')
 var getExchangeRate = require('./routes/getExchangeRate');
 var getWeather = require('./routes/getWeather')
-const mysql = require('mysql')
-const sqlConfig = require('./sqlConfig')
-const connection=mysql.createConnection(sqlConfig)
-connection.connect()
+const pool = require('./pool')
+
 /**
  * @description 爬出汇率数据写入数据库以供使用
  */
 cp.exec(`python getExchangeRate.py`, (err, stdout, stderr) => {
   if (err) console.log('stderr', err);
   if (stdout) {
-      var data=eval('(' + stdout + ')')
-      var sql='truncate ExchangeRate;'
-      for(var key in data){
-        sql+=`insert into ExchangeRate values('${key}',${+data[key]});`
+    var data = eval('(' + stdout + ')')
+    var sql = 'truncate ExchangeRate;'
+    for (var key in data) {
+      sql += `insert into ExchangeRate values('${key}',${+data[key]});`
+    }
+    pool.getConnection((err, conn) => {
+      if (err)
+        throw err
+      else {
+        conn.query(sql, null, (err, result, fieids) => {
+          if (err)
+            throw err
+          else
+            console.log(result)
+        })
       }
-      connection.query(sql,(err,result)=>{
-        if(err)
-          throw err
-        else
-          console.log(...result)
-      })
+    })
   }
 });
 
@@ -50,17 +54,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/getExchangeRate',getExchangeRate);
-app.use('/getWeather',getWeather);
+app.use('/getExchangeRate', getExchangeRate);
+app.use('/getWeather', getWeather);
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
