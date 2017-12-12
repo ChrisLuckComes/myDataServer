@@ -10,7 +10,7 @@ var users = require('./routes/users');
 const cp = require('child_process')
 var getExchangeRate = require('./routes/getExchangeRate');
 var getWeather = require('./routes/getWeather')
-const pool = require('./pool')
+const query = require('./pool')
 
 /**
  * @description 爬出汇率数据写入数据库以供使用
@@ -23,17 +23,11 @@ cp.exec(`python getExchangeRate.py`, (err, stdout, stderr) => {
     for (var key in data) {
       sql += `insert into ExchangeRate values('${key}',${+data[key]});`
     }
-    pool.getConnection((err, conn) => {
+    query(sql, null, (err, result, fields) => {
       if (err)
         throw err
-      else {
-        conn.query(sql, null, (err, result, fieids) => {
-          if (err)
-            throw err
-          else
-            console.log(result)
-        })
-      }
+      else
+        console.log(result)
     })
   }
 });
