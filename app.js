@@ -15,6 +15,7 @@ var register = require('./routes/register')
 var login = require('./routes/login')
 var checkEmail = require('./routes/checkEmail')
 var checkName = require('./routes/checkName')
+
 const query = require('./pool')
 
 /**
@@ -55,7 +56,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session())
 
 app.use('/', index);
-
+app.all('*',function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+  next();
+});
 
 app.use('/users', users);
 app.use('/getExchangeRate', getExchangeRate);
