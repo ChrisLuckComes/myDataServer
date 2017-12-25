@@ -5,9 +5,10 @@ const url = require('url')
 const query = require('../pool')
 
 /*注册*/
-router.get('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*')
-    var param=req.param
+    console.log(req.body)
+    var param=req.body
     var id=param.id
     var name=param.name
     var password=param.password

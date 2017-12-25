@@ -7,12 +7,14 @@ const query = require('../pool')
 router.get('/', function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*')
     var email = url.parse(req.url, true).query.email
-    var sql=`select count(*) from User where id=${email}`
-    query(insertSql,null, (err, result, fields)=>{
+    var sql=`select count(*) num from User where id="${email}"`
+    console.log(sql)
+    query(sql,null, (err, result, fields)=>{
+        console.log(result)
         if (err)
             throw err
         else 
-            if(result==0){
+            if(result[0].num==0){
                 res.send('unregistered')
             }else{
                 res.send('registered')
