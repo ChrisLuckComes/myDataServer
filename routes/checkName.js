@@ -7,12 +7,14 @@ const query = require('../pool')
 router.get('/', function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*')
     var name = url.parse(req.url, true).query.name
-    var sql=`select count(*) from User where name=${name}`
-    query(insertSql,null, (err, result, fields)=>{
+    var sql=`select count(*) num from User where name="${name}"`
+    console.log(`查询语句：${sql}`)
+    query(sql,null, (err, result, fields)=>{
+        console.log(`查询结果${result}`)
         if (err)
-            throw err
+            console.log(err)
         else 
-            if(result==0){
+            if(result[0].num==0){
                 res.send('unused')
             }else{
                 res.send('used')
