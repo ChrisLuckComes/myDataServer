@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session')
 var bodyParser = require('body-parser');
-
+var cors = require('cors')
 var index = require('./routes/index');
 var users = require('./routes/users');
 const cp = require('child_process')
@@ -15,7 +15,9 @@ var register = require('./routes/register')
 var login = require('./routes/login')
 var checkEmail = require('./routes/checkEmail')
 var checkName = require('./routes/checkName')
-
+var active = require('./routes/active')
+var checkLogin = require('./routes/checkLogin')
+var logout = require('./routes/logout')
 const query = require('./pool')
 
 /**
@@ -49,15 +51,24 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser('secret'));
+app.use(cookieParser('key'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use(express.cookieParser())
-app.use(session())
+app.use(cors({
+  credentials:true,
+  origin:'http://192.168.30.55:8081'
+}))
+app.use(session({
+  resave:false,
+  saveUninitialized:true,
+  secret:'key',
+  cookie:{secure:false}
+}))
 
 app.use('/', index);
 app.all('*',function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  // res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
   next();
@@ -70,6 +81,10 @@ app.use('/register', register);
 app.use('/login', login);
 app.use('/checkEmail', checkEmail);
 app.use('/checkName', checkName);
+app.use('/active', active);
+app.use('/checkLogin',checkLogin)
+app.use('/logout',logout)
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   var err = new Error('Not Found');

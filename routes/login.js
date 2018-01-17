@@ -4,21 +4,27 @@ const url = require('url')
 const query = require('../pool')
 
 /*登陆*/
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
     console.log(req.body)
-    var id=req.body.id
-    var password=req.body.password
-    var sql=`select password,isActive from User where id="${id}"`
-    query(sql,null, (err, result, fields)=>{
+    var id = req.body.id
+    var password = req.body.password
+    var sql = `select password,name,isActive from User where id="${id}"`
+    console.log(sql)
+    query(sql, null, (err, result, fields) => {
+        console.log(result)
         if (err)
             throw err
-        else 
-            if(result[0]==password){
-                req.session.id=id
-                req.cookies.isActive=result[1]
-                res.send({status:'true',isActive:result[1]})              
-            }else{
-                res.send({status:'false'})
+        else
+            if (result[0].password == password) {
+                req.session.user = {id:id,password:password}
+                // req.session.save()
+                console.log(req.session.id)
+                res.cookie('id', id, { expires: new Date(Date.now() + 900000), httpOnly: true })
+                res.cookie('isActive', result[0].isActive, { expires: new Date(Date.now() + 900000), httpOnly: true });
+                res.cookie('name', result[0].name, { expires: new Date(Date.now() + 900000), httpOnly: true });
+                res.send({ status: true, id: id, isActive: result[0].isActive, name: result[0].name })
+            } else {
+                res.send({ status: false })
             }
     })
 });
