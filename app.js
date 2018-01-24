@@ -6,9 +6,11 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session')
 var bodyParser = require('body-parser');
 var cors = require('cors')
+const cp = require('child_process')
+var MongoStore = require('connect-mongo')(session)
+
 var index = require('./routes/index');
 var users = require('./routes/users');
-const cp = require('child_process')
 var getExchangeRate = require('./routes/getExchangeRate')
 var getWeather = require('./routes/getWeather')
 var register = require('./routes/register')
@@ -57,13 +59,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use(express.cookieParser())
 app.use(cors({
   credentials:true,
-  origin:'http://192.168.30.55:8081'
+  origin:'http://192.168.30.252:8081'
 }))
 app.use(session({
   resave:false,
   saveUninitialized:true,
   secret:'key',
-  cookie:{secure:false}
+  cookie:{
+    secure:false,
+    maxAge:1000*60 
+  },
+  store:new MongoStore({
+    url: 'mongodb://127.0.0.1:27017/session' //将session存入数据库中
+  })
 }))
 
 app.use('/', index);

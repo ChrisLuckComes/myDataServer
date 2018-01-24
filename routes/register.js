@@ -36,8 +36,8 @@ router.post('/', function (req, res, next) {
         else {
             res.send(true)
             mailOptions.to = id
-            mailOptions.html = `<h3><a href="http://192.168.30.55:8081/active?id=${id.toString('base64')}">
-            http://192.168.30.55:8081/active?id=${new Buffer(id).toString('base64')}</a></h3>`
+            mailOptions.html = `<h3><a href="http://192.168.30.252:8081/active?id=${id.toString('base64')}">
+            http://192.168.30.252:8081/active?id=${new Buffer(id).toString('base64')}</a></h3>`
             transporter.sendMail(mailOptions, (err, info) => {
                 if (err) {
                     console.log(err)
