@@ -5,7 +5,6 @@ const query = require('../pool')
 
 
 router.get('/', (req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*')
     var params = url.parse(req.url, true).query
     var money1 = params.money1
     var money2 = params.money2

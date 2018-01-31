@@ -59,7 +59,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use(express.cookieParser())
 app.use(cors({
   credentials:true,
-  origin:'http://192.168.30.252:8081'
+  origin:'http://localhost:8081'
 }))
 app.use(session({
   resave:false,
@@ -67,7 +67,7 @@ app.use(session({
   secret:'key',
   cookie:{
     secure:false,
-    maxAge:1000*60 
+    maxAge:1000*60*60 
   },
   store:new MongoStore({
     url: 'mongodb://127.0.0.1:27017/session' //将session存入数据库中
@@ -76,7 +76,7 @@ app.use(session({
 
 app.use('/', index);
 app.all('*',function(req, res, next) {
-  // res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://localhost:8081");
   res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
   next();

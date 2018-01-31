@@ -32,7 +32,6 @@ async function getWeather(type, params) {
     )
 }
 router.get('/', (req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*')
     var params = getSignature()
     params.location = 'ip'
     var reqData = url.parse(req.url, true).query

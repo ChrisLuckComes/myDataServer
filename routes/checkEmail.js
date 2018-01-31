@@ -5,7 +5,6 @@ const query = require('../pool')
 
 /*检查邮箱是否已注册过*/
 router.get('/', function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*')
     var email = url.parse(req.url, true).query.email
     var sql=`select count(*) num from User where id="${email}"`
     console.log(sql)
