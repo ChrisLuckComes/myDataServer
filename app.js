@@ -20,6 +20,7 @@ var checkName = require('./routes/checkName')
 var active = require('./routes/active')
 var checkLogin = require('./routes/checkLogin')
 var logout = require('./routes/logout')
+var getQuestions = require('./routes/getQuestions')
 const query = require('./pool')
 
 /**
@@ -58,27 +59,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use(express.cookieParser())
 app.use(cors({
-  credentials:true,
-  origin:'http://localhost:8081'
+  credentials: true,
+  origin: 'http://localhost:8081'
 }))
 app.use(session({
-  resave:false,
-  saveUninitialized:true,
-  secret:'key',
-  cookie:{
-    secure:false,
-    maxAge:1000*60*60 
+  resave: false,
+  saveUninitialized: true,
+  secret: 'key',
+  cookie: {
+    secure: false,
+    maxAge: 1000 * 60 * 60
   },
-  store:new MongoStore({
+  store: new MongoStore({
     url: 'mongodb://127.0.0.1:27017/session' //将session存入数据库中
   })
 }))
 
 app.use('/', index);
-app.all('*',function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:8081");
-  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+app.all('*', function (req, res, next) {
+  if (req.headers.origin == 'http://localhost:8081' || req.headers.origin == 'http://localhost:8800') {
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+  }
   next();
 });
 
@@ -90,9 +93,9 @@ app.use('/login', login);
 app.use('/checkEmail', checkEmail);
 app.use('/checkName', checkName);
 app.use('/active', active);
-app.use('/checkLogin',checkLogin)
-app.use('/logout',logout)
-
+app.use('/checkLogin', checkLogin)
+app.use('/logout', logout)
+app.use('/getQuestions', getQuestions)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   var err = new Error('Not Found');
