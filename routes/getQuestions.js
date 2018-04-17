@@ -7,7 +7,6 @@ const murl = "mongodb://127.0.0.1:27017"
 
 router.get('/', (req, res, next) => {
     MongoClient.connect(murl, (err, client) => {
-        // var col=client.db('questions').collection(key)
         ~async function getTest(params) {
             let ret = await client.db('questions').collections()
             Promise.all(ret.map(item =>
